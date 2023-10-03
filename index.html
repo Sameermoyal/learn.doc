@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form onsubmit="saveToLocalStorage(event)">
+        <lable>Name</lable>
+        <input type="text" id="unameInputTag" name="uname">
+        <label>Email</label>
+        <input type="email" id="emailInputTag" name="email" >
+        <label>phone Number</label>
+        <input type="tel" id="phoneNumberInputTag" name="number">
+        <button>Submit</button>
+        <!--jab button element ho tabhi onsubmit kam karega aur sari value function ke argument event ke dvara pass ho jayegi -->
+    </form>
+
+    <ul id="Items"></ul>
+    <script>
+        function saveToLocalStorage(event){
+            event.preventDefault();
+            const name= event.target.uname.value;
+            const email=event.target.email.value;
+            const phonenumber=event.target.number.value;
+
+            const obj={
+                name,
+                email,
+                phonenumber
+            }
+            axios.post('https://crudcrud.com/api/85cd9ddcb57a4253b783e4089a44b6f1/appointmentData',obj)
+              .then(res=>showUserOnScreen(res.data))
+              .catch(err=>console.log(err))
+         }
+
+
+        function showUserOnScreen(obj){
+            const parentElem=document.getElementById('Items')
+            const chilElem = document.createElement('li')
+            chilElem.textContent=obj.name + ' - ' + obj.email + ' - ' +obj.phonenumber
+           
+
+            //create delete button
+            const deleteButton = document.createElement("input")
+            // deleteButton.setAttribute("type","button")
+            // deleteButton.setAttribute("value","Delete")
+
+            deleteButton.type= "button"
+            deleteButton.value="Delete"
+            deleteButton.onclick = () =>{
+                localStorage.removeItem(obj.email)
+                parentElem.removeChild(chilElem)
+            }
+            const editButton = document.createElement("input")
+            editButton.type="button"
+            editButton.value="Edit"
+            editButton.onclick=()=>{
+                localStorage.removeItem(obj.email)
+                parentElem.removeChild(chilElem)
+                document.getElementById('unameInputTag').value=obj.name
+                document.getElementById('emailInputTag').value=obj.email
+                document.getElementById('phoneNumberInputTag').value=obj.phonenumber
+            }
+            
+            
+            chilElem.appendChild(deleteButton)
+            chilElem.appendChild(editButton)
+            parentElem.appendChild(chilElem)
+           
+            // parentElem.innerHTML = parentElem.innerHTML + ` <li> ${obj.name} - ${obj.email} - ${obj.phonenumber}</li> `  
+        }
+        window.addEventListener("DOMContentLoaded",()=>{
+                axios.get('https://crudcrud.com/api/85cd9ddcb57a4253b783e4089a44b6f1/appointmentdata')
+                   .then((res)=>{
+                    console.log(res)
+                    for(var i=0;i<res.data.length;i++){
+                        showUserOnScreen(res.data[i])
+                    }
+                   })
+                   .catch((error)=>{
+                    console.log(error)
+                   })
+            })
+        
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.1/axios.min.js"></script>
+
+    
+</body>
+</html>
+echo "# -Get-the-saved-User-Details-from-crudcrud" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/Sameermoyal/-Get-the-saved-User-Details-from-crudcrud.git
+git push -u origin main
