@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form onsubmit="saveToCrudCrud(event)">
+      <label for="name">ItemName</label>
+      <input type="text" id="name" name="iname" />
+      <label for="discription">Discription</label>
+      <input type="text" id="discription" name="idiscription" />
+      <label for="price">Price</label>
+      <input type="number" name="iprice" id="price" />
+      <label for="quantity">Quantity</label>
+      <input type="number" name="iquantity" id="quantity" />
+      <button>Add Item</button>
+    </form>
+    <ul id="details"></ul>
+    <script>
+      function saveToCrudCrud(event) {
+        event.preventDefault();
+        item = event.target.iname.value;
+        disc = event.target.idiscription.value;
+        quantity = event.target.iquantity.value;
+        price = event.target.iprice.value;
+
+        itemObj = {
+          item,
+          disc,
+          quantity,
+          price,
+        };
+        axios
+          .post(
+            "https://crudcrud.com/api/7ad4d06fc8aa4cca982f2a913b5c1f52/data",
+            itemObj
+          )
+          .then((res) => {
+            showItemOnScreen(res.data);
+          })
+          .catch((err) => {
+            document.body.innerHTML =
+              document.body.innerHTML +
+              "<h2>Somthing went wrong in post request<h2>";
+          });
+      }
+      function showItemOnScreen(items) {
+        const parentElement = document.getElementById("details");
+        childElement = document.createElement("li");
+        childElement.textContent =
+          items.item +
+          " - " +
+          items.disc +
+          " - " +
+          items.price +
+          " - " +
+          items.quantity;
+
+        buy1Button = document.createElement("input");
+        buy1Button.type = "button";
+        buy1Button.value = "Buy1";
+        buy1Button.onclick = () => {
+          axios
+            .put(
+              `https://crudcrud.com/api/7ad4d06fc8aa4cca982f2a913b5c1f52/data/${items._id}`,
+              {
+                item: items.item,
+                disc: items.disc,
+                quantity: items.quantity - 1, // Subtract 1 from the current quantity
+                price: items.price,
+              }
+            )
+            .then((res) => {
+              // Update the quantity in the items object with the response from the server
+              items.quantity = res.data.quantity; // Assuming the server returns the updated quantity
+
+              // Update the displayed quantity in the user interface
+              childElement.textContent =
+                items.item +
+                " - " +
+                items.disc +
+                " - " +
+                items.price +
+                " - " +
+                items.quantity;
+            })
+            .catch((error) => {
+              console.error("PUT request failed: " + error);
+            });
+        };
+
+        buy2Button = document.createElement("input");
+        buy2Button.type = "button";
+        buy2Button.value = "Buy2";
+        buy2Button.onclick = () => {
+          axios
+            .put(
+              `https://crudcrud.com/api/7ad4d06fc8aa4cca982f2a913b5c1f52/data/${items._id}`,
+              {
+                item: items.item,
+                disc: items.disc,
+                quantity: items.quantity - 2, // Subtract 1 from the current quantity
+                price: items.price,
+              }
+            )
+            .then((res) => {
+              // Update the quantity in the items object with the response from the server
+              items.quantity = res.data.quantity; // Assuming the server returns the updated quantity
+
+              // Update the displayed quantity in the user interface
+              childElement.textContent =
+                items.item +
+                " - " +
+                items.disc +
+                " - " +
+                items.price +
+                " - " +
+                items.quantity;
+            })
+            .catch((error) => {
+              console.error("PUT request failed: " + error);
+            });
+        };
+
+        buy3Button = document.createElement("input");
+        buy3Button.type = "button";
+        buy3Button.value = "Buy3";
+        buy3Button.onclick = () => {
+          axios
+            .put(
+              `https://crudcrud.com/api/7ad4d06fc8aa4cca982f2a913b5c1f52/data/${items._id}`,
+              {
+                item: items.item,
+                disc: items.disc,
+                quantity: items.quantity - 3, // Subtract 1 from the current quantity
+                price: items.price,
+              }
+            )
+            .then((res) => {
+              // Update the quantity in the items object with the response from the server
+              items.quantity = res.data.quantity; // Assuming the server returns the updated quantity
+
+              // Update the displayed quantity in the user interface
+              childElement.textContent =
+                items.item +
+                " - " +
+                items.disc +
+                " - " +
+                items.price +
+                " - " +
+                items.quantity;
+            })
+            .catch((error) => {
+              console.error("PUT request failed: " + error);
+            });
+        };
+
+        parentElement.appendChild(childElement);
+        parentElement.appendChild(buy1Button);
+        parentElement.appendChild(buy2Button);
+        parentElement.appendChild(buy3Button);
+      }
+
+      function editQuantity(items) {}
+      window.addEventListener("DOMContentLoaded", () => {
+        axios
+          .get("https://crudcrud.com/api/7ad4d06fc8aa4cca982f2a913b5c1f52/data")
+          .then((res) => {
+            for (i = 0; i < res.data.length; i++) {
+              showItemOnScreen(res.data[i]);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            document.body.innerHTML =
+              document.body.innerHTML +
+              "<h2>Somthing went wrong -- Get request canciled<h2>";
+          });
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.1/axios.min.js"></script>
+  </body>
+</html>

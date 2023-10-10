@@ -26,21 +26,29 @@
             const phonenumber=event.target.number.value;
 
             const obj={
+
                 name,
                 email,
                 phonenumber
             }
-            axios.post('https://crudcrud.com/api/85cd9ddcb57a4253b783e4089a44b6f1/appointmentData',obj)
+            axios.post('https://crudcrud.com/api/cc1cea7d8bfe4f86849587459e4add41/appointmentData',obj)
               .then(res=>showUserOnScreen(res.data))
-              .catch(err=>console.log(err))
+              .catch(err=>{
+                document.body.innerHTML=document.body.innerHTML + "<h4>Somthing went wrong<h4>"
+                console.log(err)})
          }
 
 
         function showUserOnScreen(obj){
+            // obj={
+            //     _id:'',
+            //     name:'',
+            //     email:'',
+            // }
             const parentElem=document.getElementById('Items')
             const chilElem = document.createElement('li')
             chilElem.textContent=obj.name + ' - ' + obj.email + ' - ' +obj.phonenumber
-           
+
 
             //create delete button
             const deleteButton = document.createElement("input")
@@ -50,8 +58,14 @@
             deleteButton.type= "button"
             deleteButton.value="Delete"
             deleteButton.onclick = () =>{
-                localStorage.removeItem(obj.email)
-                parentElem.removeChild(chilElem)
+                //localStorage.removeItem(obj.email)
+                //parentElem.removeChild(chilElem)
+                axios
+                   .delete(`https://crudcrud.com/api/cc1cea7d8bfe4f86849587459e4add41/appointmentData/${obj._id}`) ////adding urw with obj._id because server return _id not only id
+                   ////edit function call axios.delete fun to delete and put detail in input fields and change and post it again
+
+
+
             }
             const editButton = document.createElement("input")
             editButton.type="button"
@@ -62,17 +76,20 @@
                 document.getElementById('unameInputTag').value=obj.name
                 document.getElementById('emailInputTag').value=obj.email
                 document.getElementById('phoneNumberInputTag').value=obj.phonenumber
+                axios.put(`https://crudcrud.com/api/cc1cea7d8bfe4f86849587459e4add41/appointmentData/${obj._id}`) ////adding urw with obj._id because server return _id not only id
+                  
+                
             }
-            
-            
+
+
             chilElem.appendChild(deleteButton)
             chilElem.appendChild(editButton)
             parentElem.appendChild(chilElem)
-           
+
             // parentElem.innerHTML = parentElem.innerHTML + ` <li> ${obj.name} - ${obj.email} - ${obj.phonenumber}</li> `  
         }
         window.addEventListener("DOMContentLoaded",()=>{
-                axios.get('https://crudcrud.com/api/85cd9ddcb57a4253b783e4089a44b6f1/appointmentdata')
+                axios.get('https://crudcrud.com/api/cc1cea7d8bfe4f86849587459e4add41/appointmentData')
                    .then((res)=>{
                     console.log(res)
                     for(var i=0;i<res.data.length;i++){
@@ -83,17 +100,10 @@
                     console.log(error)
                    })
             })
-        
+
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.1/axios.min.js"></script>
 
-    
+
 </body>
 </html>
-echo "# -Get-the-saved-User-Details-from-crudcrud" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/Sameermoyal/-Get-the-saved-User-Details-from-crudcrud.git
-git push -u origin main
